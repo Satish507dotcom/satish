@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Manager Portal</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        nav li {
+            margin: 0 15px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-form input, 
+        .activity-form textarea, 
+        .activity-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .activity-form button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .activity-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .status-pending {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 5px 0;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HR Manager Portal</h1>
+        <p>Daily Activity Tracker & Employee Management System</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#activities">Activities</a></li>
+            <li><a href="#employees">Employees</a></li>
+            <li><a href="#reports">Reports</a></li>
+            <li><a href="#settings">Settings</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <h4>Today's Activities</h4>
+                    <div class="stat-value" id="todayActivities">0</div>
+                </div>
+                <div class="stat-item">
+                    <h4>Pending Tasks</h4>
+                    <div class="stat-value" id="pendingTasks">0</div>
+                </div>
+                <div class="stat-item">
+                    <h4>Total Employees</h4>
+                    <div class="stat-value" id="totalEmployees">0</div>
+                </div>
+                <div class="stat-item">
+                    <h4>Upcoming Events</h4>
+                    <div class="stat-value" id="upcomingEvents">0</div>
+                </div>
+            </div>
+            
+            <div class="dashboard">
+                <div class="card">
+                    <h3>Add New Activity</h3>
+                    <form class="activity-form" id="activityForm">
+                        <div>
+                            <label for="activityDate">Date:</label>
+                            <input type="date" id="activityDate" required>
+                        </div>
+                        <div>
+                            <label for="activityType">Activity Type:</label>
+                            <select id="activityType" required>
+                                <option value="">Select type</option>
+                                <option value="recruitment">Recruitment</option>
+                                <option value="training">Training</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="appraisal">Performance Appraisal</option>
+                                <option value="documentation">Documentation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="activityDescription">Description:</label>
+                            <textarea id="activityDescription" rows="3" required></textarea>
+                        </div>
+                        <div>
+                            <label for="relatedEmployee">Related Employee (if any):</label>
+                            <input type="text" id="relatedEmployee" placeholder="Employee ID or Name">
+                        </div>
+                        <div>
+                            <label for="status">Status:</label>
+                            <select id="status">
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit">Save Activity</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>Recent Activities</h3>
+                    <div class="table-container">
+                        <table id="activitiesTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Activities will be added here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="employees" class="card" style="margin-top: 30px;">
+            <h3>Employee Directory</h3>
+            <div class="table-container">
+                <table id="employeesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Join Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Employees will be added here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 HR Manager Portal. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Sample data - in a real app, this would come from a database
+        let activities = [
+            { id: 1, date: '2023-05-15', type: 'recruitment', description: 'Interview for Marketing position', employee: 'EMP-102', status: 'completed' },
+            { id: 2, date: '2023-05-16', type: 'training', description: 'New employee orientation', employee: 'EMP-145', status: 'completed' },
+            { id: 3, date: '2023-05-17', type: 'meeting', description: 'Quarterly HR strategy meeting', employee: '', status: 'pending' },
+            { id: 4, date: '2023-05-18', type: 'documentation', description: 'Update employee handbook', employee: '', status: 'pending' }
+        ];
+        
+        let employees = [
+            { id: 'EMP-101', name: 'John Smith', department: 'IT', position: 'Software Developer', joinDate: '2020-03-15', status: 'active' },
+            { id: 'EMP-102', name: 'Sarah Johnson', department: 'Marketing', position: 'Marketing Manager', joinDate: '2019-07-22', status: 'active' },
+            { id: 'EMP-103', name: 'Michael Brown', department: 'HR', position: 'HR Specialist', joinDate: '2021-01-10', status: 'active' },
+            { id: 'EMP-104', name: 'Emily Davis', department: 'Finance', position: 'Financial Analyst', joinDate: '2022-05-30', status: 'active' },
+            { id: 'EMP-105', name: 'Robert Wilson', department: 'Operations', position: 'Operations Manager', joinDate: '2018-11-05', status: 'active' }
+        ];
+        
+        // DOM elements
+        const activityForm = document.getElementById('activityForm');
+        const activitiesTable = document.getElementById('activitiesTable').querySelector('tbody');
+        const employeesTable = document.getElementById('employeesTable').querySelector('tbody');
+        const todayActivitiesEl = document.getElementById('todayActivities');
+        const pendingTasksEl = document.getElementById('pendingTasks');
+        const totalEmployeesEl = document.getElementById('totalEmployees');
+        const upcomingEventsEl = document.getElementById('upcomingEvents');
+        
+        // Initialize the app
+        function init() {
+            renderActivities();
+            renderEmployees();
+            updateStats();
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('activityDate').value = today;
+        }
+        
+        // Render activities table
+        function renderActivities() {
+            activitiesTable.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(activity.date)}</td>
+                    <td>${capitalizeFirstLetter(activity.type)}</td>
+                    <td>${activity.description}</td>
+                    <td class="status-${activity.status}">${capitalizeFirstLetter(activity.status)}</td>
+                `;
+                activitiesTable.appendChild(row);
+            });
+        }
+        
+        // Render employees table
+        function renderEmployees() {
+            employeesTable.innerHTML = '';
+            
+            employees.forEach(employee => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${employee.id}</td>
+                    <td>${employee.name}</td>
+                    <td>${employee.department}</td>
+                    <td>${employee.position}</td>
+                    <td>${formatDate(employee.joinDate)}</td>
+                    <td>${capitalizeFirstLetter(employee.status)}</td>
+                `;
+                employeesTable.appendChild(row);
+            });
+        }
+        
+        // Update dashboard statistics
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todaysActivities = activities.filter(a => a.date === today).length;
+            const pendingTasks = activities.filter(a => a.status === 'pending').length;
+            
+            todayActivitiesEl.textContent = todaysActivities;
+            pendingTasksEl.textContent = pendingTasks;
+            totalEmployeesEl.textContent = employees.length;
+            
+            // Simple upcoming events calculation (next 7 days)
+            const upcomingEvents = activities.filter(a => {
+                const activityDate = new Date(a.date);
+                const todayDate = new Date();
+                const nextWeek = new Date(todayDate);
+                nextWeek.setDate(todayDate.getDate() + 7);
+                
+                return activityDate > todayDate && activityDate <= nextWeek;
+            }).length;
+            
+            upcomingEventsEl.textContent = upcomingEvents;
+        }
+        
+        // Handle form submission
+        activityForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newActivity = {
+                id: activities.length + 1,
+                date: document.getElementById('activityDate').value,
+                type: document.getElementById('activityType').value,
+                description: document.getElementById('activityDescription').value,
+                employee: document.getElementById('relatedEmployee').value,
+                status: document.getElementById('status').value
+            };
+            
+            activities.push(newActivity);
+            renderActivities();
+            updateStats();
+            
+            // Reset form
+            activityForm.reset();
+            document.getElementById('activityDate').value = new Date().toISOString().split('T')[0];
+            
+            alert('Activity saved successfully!');
+        });
+        
+        // Helper functions
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+        
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
